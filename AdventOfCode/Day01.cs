@@ -77,8 +77,8 @@ public class Day01 : BaseDay
         foreach (var inputLine in input)
         {
             var line = inputLine.ToLower();
-            
-            
+
+
             foreach (var value in valid.Keys)
             {
                 if (line.Contains(value))
@@ -117,7 +117,7 @@ public class Day01 : BaseDay
                     }
                 }
             }
-            
+
             for (var i = 0; i < line.Length; i++)
             {
                 if (int.TryParse($"{line[i]}", out var found))
