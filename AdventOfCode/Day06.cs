@@ -91,21 +91,10 @@ Distance:  9  40  200
 
         for (long speed = 0; speed < raceTime; speed++)
         {
-            if (speed == 71516)
-            {
-                //Do nothing
-            }
-            //v * T = d
-            long didIMakeIt = 0;
-            long timeLeftToMove = raceTime - speed;
-            // if distance travel divided by the distance per millisecond
-            //var totalDistanceTravelled = speed * timeLeftToMove;
+            var timeLeftToMove = raceTime - speed;
+            var didIMakeIt = timeLeftToMove * speed > raceDistance;
 
-
-            didIMakeIt = timeLeftToMove * speed;
-            
-
-            if (didIMakeIt > raceDistance)
+            if (didIMakeIt)
                 wins++;
         }
 
