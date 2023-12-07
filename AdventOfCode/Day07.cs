@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Runtime.InteropServices.JavaScript;
 using System.Security.AccessControl;
 
 namespace AdventOfCode;
@@ -7,7 +8,7 @@ public class Day07 : BaseDay
 {
     private readonly string[] _input;
 
-    private readonly Dictionary<char, int> Cards = new()
+    public readonly Dictionary<char, int> Cards = new()
     {
         { '2', 0 },
         { '3', 1 },
@@ -33,43 +34,79 @@ public class Day07 : BaseDay
 
     public override ValueTask<string> Solve_2() => Part2(_input);
 
-    public record struct Hand(string Cards, int Bet);
-
     public ValueTask<string> Part1(string[] input)
     {
-        Dictionary<Hand, int> Hands = new();
-
+        List<Hand> Hands = new();
         foreach (var player in input)
         {
             var playerSplit = player.Split(" ");
+            //var looseHand = playerSplit[0];
+            //var playerHand =new String( looseHand.OrderByDescending(x => Cards[x]).ThenBy(x => x).ToArray());
             var playerHand = playerSplit[0];
             var playerBet = int.Parse(playerSplit[1]);
-            var thisHand = new Hand(playerHand, playerBet);
-            Hands.Add(thisHand, ShowMeWhatYouGot(playerHand));
+            var highCard = playerHand[0];
+            var thisHand = new Hand(playerHand, playerBet, ShowMeWhatYouGot(playerHand));
+
+            Hands.Add(thisHand);
         }
 
-        var ordered = Hands.OrderBy(c => c.Value).ToDictionary();
-        CheckForTies(ordered);
+        var ordered = Hands.OrderBy(c => c.Rank).ToArray();
 
+        var ranksChecked = new List<int>();
+        var queue = new Queue<Hand>();
+        for (int i = 0; i < ordered.Count()-1; i++)
+        {
+            if (ordered[i].Rank == ordered[i + 1].Rank)
+            {
+                var winner = false;
+                for (int j = 0; j < 5; j++)
+                {
+                    if (Cards[ordered[i].Cards[j]] > Cards[ordered[i + 1].Cards[j]])
+                    {
+                        queue.Enqueue(ordered[i]);
+                        queue.Enqueue(ordered[i + 1]);
+                        winner = true;
+                    }
+                    else if (Cards[ordered[i].Cards[j]] > Cards[ordered[i + 1].Cards[j]])
+                    {
+                        queue.Enqueue(ordered[i + 1]);
+                        queue.Enqueue(ordered[i]);
+                        winner = true;
+                    }
+                    else
+                    {
+                        continue;
+                    }
 
-        return ValueTask.FromResult("");
+                    if (winner) break;
+                }
+            }
+            else
+            {
+                queue.Enqueue(ordered[i]);
+            }
+        }
+
+        var total = 0;
+        while (queue.Any())
+        {
+            var hand = queue.Dequeue();
+            total += hand.Bet * hand.Rank;
+        }
+        
+        return ValueTask.FromResult($"{total}");
     }
 
-    public void CheckForTies(Dictionary<Hand, int> hands)
+    public void CheckTies(IEnumerable<Hand> hands)
     {
-        Tuple<Hand, int> temp;
-        Queue<Dictionary<Hand, int>> queue = new();
+        Hand temp = new();
+        List<KeyValuePair<Hand, int>> tiedPlayers = new();
         bool firstRun = true;
+        bool tieFound = false;
+        bool notfound = false;
+        var index = 0;
         foreach (var player in hands)
         {
-            if (firstRun)
-            {
-                temp = new Tuple<Hand, int>(player.Key, player.Value);
-                firstRun = false;
-                continue;
-            }
-//TODO : START HERE
-            if (player.Value == temp.Item2)
         }
     }
 
@@ -99,13 +136,13 @@ public class Day07 : BaseDay
             ThreeOfAKind,
             TwoPair,
             OnePair,
-            HighCard
         };
         var handStrength = 0;
         foreach (var tryHand in waysToWin)
         {
             handStrength = tryHand(player);
             if (handStrength > 0)
+
                 return handStrength;
         }
 
@@ -258,3 +295,5 @@ public class Day07 : BaseDay
         return 0;
     }
 }
+
+public record struct Hand(string Cards, int Bet, int Rank);
