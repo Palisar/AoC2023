@@ -37,11 +37,8 @@ Distance:  9  40  200
 
             for (var speed = 0; speed < raceTime; speed++)
             {
-                //v * T = d
                 var didIMakeIt = 0;
                 var timeLeftToMove = raceTime - speed;
-                // if distance travel divided by the distance per millisecond
-                //var totalDistanceTravelled = speed * timeLeftToMove;
 
                 for (int j = 1; j <= timeLeftToMove; j++)
                 {
@@ -50,9 +47,7 @@ Distance:  9  40  200
 
                 if (didIMakeIt > raceDistance)
                     wins++;
-
-                //var willIMakeIt = speed - raceTime;
-                //if (distanceTravelled >= raceDistance)
+             
             }
 
             winningTotals.Add(wins);
