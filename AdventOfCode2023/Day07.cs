@@ -50,6 +50,7 @@ public class Day07 : BaseDay
             Hands.Add(thisHand);
         }
 
+        HashSet<int> things = new HashSet<int>();
         var ordered = Hands.OrderBy(c => c.Rank).ToArray();
 
         var ranksChecked = new List<int>();
@@ -61,13 +62,16 @@ public class Day07 : BaseDay
                 var winner = false;
                 for (int j = 0; j < 5; j++)
                 {
-                    if (Cards[ordered[i].Cards[j]] > Cards[ordered[i + 1].Cards[j]])
+                    var leftCard = Cards[ordered[i].Cards[j]];
+                    var rightCard = Cards[ordered[i + 1].Cards[j]];
+                    if (leftCard > rightCard)
                     {
                         queue.Enqueue(ordered[i]);
                         queue.Enqueue(ordered[i + 1]);
+                        i++;
                         winner = true;
                     }
-                    else if (Cards[ordered[i].Cards[j]] > Cards[ordered[i + 1].Cards[j]])
+                    else if (leftCard > rightCard)
                     {
                         queue.Enqueue(ordered[i + 1]);
                         queue.Enqueue(ordered[i]);
@@ -78,7 +82,11 @@ public class Day07 : BaseDay
                         continue;
                     }
 
-                    if (winner) break;
+                    if (winner)
+                    {
+                        winner = false;
+                        break;
+                    }
                 }
             }
             else

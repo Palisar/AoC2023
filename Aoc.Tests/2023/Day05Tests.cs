@@ -1,8 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using AdventOfCode;
+﻿using AdventOfCode;
 using FluentAssertions;
 
-namespace Aoc.Tests;
+namespace Aoc.Tests._2023;
 
 public class Day05Tests
 {

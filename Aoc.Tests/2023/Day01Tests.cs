@@ -2,7 +2,7 @@ using System.Reflection.PortableExecutable;
 using AdventOfCode;
 using FluentAssertions;
 
-namespace Aoc.Tests;
+namespace Aoc.Tests._2023;
 
 public class Day01Tests
 {
